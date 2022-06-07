@@ -18,27 +18,38 @@ export default function GameScreen() {
 
     const [gameOn, setGameOn] = useState(false);
     const [number, setNumber] = useState(0);
+    const [numberHistory, setNumberHistory] = useState(new Set());
     const [result, setResult] = useState(false);
     const [points, setPoints] = useState(0);
     const [record, setRecord] = useState(0);
 
-    function generateNewNum(min, max) {
+    function generateNewNum(min = 10, max = 200) {
         let num;
         if (min < 0) min = 0;
 
         do {
             num = Math.floor(Math.random() * (Number(max) + 1 - Number(min)) + Number(min));
-        } while (num % 2 == 0 || num % 5 == 0);
+        } while (num % 2 == 0 || num % 5 == 0 || numberHistory.has(num));
 
         setNumber(num);
+        setNumberHistory(numberHistory => numberHistory.add(num));
         if (ehPrimo(num)) setResult(true);
         else setResult(false);
     }
 
     function verify(answer) {
         if (answer == result) {
-            setPoints(points + 1);
-            generateNewNum(10, 500);
+            let newPoints = points + 1;
+            setPoints(newPoints);
+
+            if (newPoints >= 43)
+                generateNewNum(1000, 10000);
+            else if (newPoints >= 23)
+                generateNewNum(100, 1000);
+            else if (newPoints >= 13)
+                generateNewNum(100, 500);
+            else
+                generateNewNum();
         } else {
             if (points > record) {
                 Alert.alert(
@@ -53,6 +64,7 @@ export default function GameScreen() {
                 );
             }
             setPoints(0);
+            setNumberHistory(new Set());
             setGameOn(false);
         }
     }
@@ -69,7 +81,7 @@ export default function GameScreen() {
                         console.log('Recorde resetado');
                         Alert.alert(
                             "Reset executado",
-                            "Você zerou seu recorde"
+                            "Você zerou seu recorde."
                         );
                     }
                 },
@@ -100,7 +112,7 @@ export default function GameScreen() {
             console.log("Erro ao recuperar recorde com AsyncStorage");
         }
     }
-    
+
     useEffect(() => {
         readRecord();
     }, []);
@@ -112,7 +124,7 @@ export default function GameScreen() {
                     <>
                         <Text style={[styles.text, { fontSize: 40 }]}>{number} eh primo?</Text>
                         <Text style={styles.text}>
-                            {points == 0 ? "Você ainda não fez pontos" : `Você fez ${points} ${points == 1 ? "ponto": "pontos"}`}
+                            {points == 0 ? "Você ainda não fez pontos" : `Você fez ${points} ${points == 1 ? "ponto" : "pontos"}`}
                         </Text>
 
                         <View style={styles.answerGroup}>
@@ -151,7 +163,7 @@ export default function GameScreen() {
                             onLongPress={resetRecord}
                             delayLongPress={4000}
                             onPress={() => {
-                                generateNewNum(10, 500);
+                                generateNewNum(10, 200);
                                 setGameOn(true);
                             }}
                         >Jogar</Button>

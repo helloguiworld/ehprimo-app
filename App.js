@@ -28,6 +28,3 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-
-// const styles = StyleSheet.create({
-// });
