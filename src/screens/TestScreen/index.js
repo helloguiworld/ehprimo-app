@@ -64,7 +64,8 @@ export default function TestScreen() {
             <DismissKeybordView>
                 <SafeAreaView style={[styles.container, { backgroundColor: mainColor }]}>
                     <View style={styles.card}>
-                        <Text style={styles.tittle}>{title}</Text>
+                        <Text style={styles.cardTittle}>{title}</Text>
+
                         <TextInput
                             placeholder='Digite um número'
                             placeholderTextColor={colors.darkGrey}
@@ -83,6 +84,7 @@ export default function TestScreen() {
                                 }
                             }}
                         />
+
                         <TouchableOpacity
                             style={[styles.cardButton, { backgroundColor: contrastColor }]}
                             onLongPress={easterEgg}
@@ -111,11 +113,11 @@ const styles = StyleSheet.create({
     card: {
         backgroundColor: colors.white,
         margin: 40,
-        borderRadius: 4,
+        borderRadius: 8,
         padding: 20,
     },
 
-    tittle: {
+    cardTittle: {
         color: colors.black,
         fontSize: 32,
         fontWeight: '600',
