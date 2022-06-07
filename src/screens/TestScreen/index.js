@@ -10,6 +10,7 @@ import {
     Keyboard,
     Vibration,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import colors from '../../colors';
 import ehPrimo from '../../functions/ehPrimo';
@@ -18,8 +19,11 @@ import DismissKeybordView from '../../components/DismissKeybordView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TestScreen() {
-    const [title, setTitle] = useState('Eh Primo?');
+    const navigation = useNavigation();
+
     const [number, setNumber] = useState(0);
+    const [testedNumber, setTestedNumber] = useState(null);
+    const [title, setTitle] = useState('Eh Primo?');
     const [newNumberToTest, setNewNumberToTest] = useState(false);
     const [mainColor, setMainColor] = useState(colors.purple);
     const [contrastColor, setContrastColor] = useState(colors.darkPurple);
@@ -40,16 +44,18 @@ export default function TestScreen() {
                 "Você precisa digitar um número antes de efetuar a verificação!"
             );
         } else if (number == 112358) {
+            setTestedNumber(null);
             setTitle('Eh Primo?');
-            // navigation.navigate('Game');
+            navigation.navigate('Game');
         } else {
+            setTestedNumber(number);
             if (ehPrimo(number)) {
-                setTitle(number + ' eh primo!');
+                setTitle(' eh primo!');
                 setMainColor(colors.green);
                 setContrastColor(colors.darkGreen);
                 Vibration.vibrate();
             } else {
-                setTitle(number + ' não eh :/');
+                setTitle(' não eh :/');
                 setMainColor(colors.red);
                 setContrastColor(colors.darkRed);
             }
@@ -64,7 +70,10 @@ export default function TestScreen() {
             <DismissKeybordView>
                 <SafeAreaView style={[styles.container, { backgroundColor: mainColor }]}>
                     <View style={styles.card}>
-                        <Text style={styles.cardTittle}>{title}</Text>
+                        <View style={styles.cardTittleGroup}>
+                            <Text style={styles.cardTittle}>{testedNumber}</Text>
+                            <Text style={styles.cardTittle}>{title}</Text>
+                        </View>
 
                         <TextInput
                             placeholder='Digite um número'
@@ -117,6 +126,11 @@ const styles = StyleSheet.create({
         padding: 20,
     },
 
+    cardTittleGroup: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+    },
     cardTittle: {
         color: colors.black,
         fontSize: 32,

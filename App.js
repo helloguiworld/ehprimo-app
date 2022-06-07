@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import TestScreen from './src/screens/TestScreen';
+import GameScreen from './src/screens/GameScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -15,10 +16,13 @@ export default function App() {
       <StatusBar style='auto' />
       <NavigationContainer>
         <Stack.Navigator
-          mode='modal'
-          screenOptions={{ headerShown: false }}
+          screenOptions={{
+            headerShown: false,
+            presentation: 'modal',
+          }}
         >
           <Stack.Screen name='Test' component={TestScreen} />
+          <Stack.Screen name='Game' component={GameScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
