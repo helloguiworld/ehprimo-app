@@ -11,12 +11,13 @@ import {
     Vibration,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import colors from '../../colors';
 import ehPrimo from '../../functions/ehPrimo';
 
 import DismissKeybordView from '../../components/DismissKeybordView';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Button from '../../components/Button';
 
 export default function TestScreen() {
     const navigation = useNavigation();
@@ -94,16 +95,14 @@ export default function TestScreen() {
                             }}
                         />
 
-                        <TouchableOpacity
-                            style={[styles.cardButton, { backgroundColor: contrastColor }]}
+                        <Button
+                            style={{ backgroundColor: contrastColor, marginTop: 10 }}
+                            onPress={() => verify(number)}
                             onLongPress={easterEgg}
                             delayLongPress={2000}
-                            onPress={() => {
-                                verify(number);
-                            }}
                         >
-                            <Text style={styles.cardButtonText}>Verificar</Text>
-                        </TouchableOpacity>
+                            Verificar
+                        </Button>
                     </View>
                 </SafeAreaView>
             </DismissKeybordView>
@@ -145,16 +144,5 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 4,
         padding: 10,
-    },
-
-    cardButton: {
-        marginTop: 10,
-        borderRadius: 4,
-        padding: 10,
-        alignItems: 'center'
-    },
-    cardButtonText: {
-        color: colors.white,
-        fontSize: 20,
     },
 });
