@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import colors from '../../colors';
 import ehPrimo from '../../functions/ehPrimo';
+import factorization from '../../functions/factorization';
 
 import DismissKeybordView from '../../components/DismissKeybordView';
 import Button from '../../components/Button';
@@ -22,6 +23,7 @@ export default function TestScreen() {
     const navigation = useNavigation();
 
     const [number, setNumber] = useState(0);
+    const [numberFactorization, setNumberFactorization] = useState([]);
     const [testedNumber, setTestedNumber] = useState(null);
     const [title, setTitle] = useState('Eh Primo?');
     const [newNumberToTest, setNewNumberToTest] = useState(false);
@@ -45,17 +47,20 @@ export default function TestScreen() {
             );
         } else if (number == 112358) {
             setTestedNumber(null);
+            setNumberFactorization([]);
             setTitle('Eh Primo?');
             navigation.navigate('Game');
         } else {
             setTestedNumber(number);
             if (ehPrimo(number)) {
                 setTitle(' eh primo!');
+                setNumberFactorization([]);
                 setMainColor(colors.green);
                 setContrastColor(colors.darkGreen);
                 Vibration.vibrate();
             } else {
                 setTitle(' não eh :/');
+                setNumberFactorization(factorization(number, false, true));
                 setMainColor(colors.red);
                 setContrastColor(colors.darkRed);
             }
@@ -70,22 +75,45 @@ export default function TestScreen() {
             <DismissKeybordView>
                 <SafeAreaView style={[styles.container, { backgroundColor: mainColor }]}>
                     <View style={styles.card}>
-                        <View style={styles.cardTittleGroup}>
+                        <View style={styles.cardGroup}>
                             <Text style={styles.cardTittle}>{testedNumber}</Text>
                             <Text style={styles.cardTittle}>{title}</Text>
                         </View>
+                        {
+                            numberFactorization.length ?
+                                <View style={styles.factorizationView}>
+                                    <Text style={styles.text}>Fatoração: </Text>
+                                    {
+                                        numberFactorization
+                                            .flatMap((item, index) =>
+                                                <View key={index} style={styles.exponentialView}>
+                                                    {
+                                                        index == 0 ? null :
+                                                        <Text style={styles.text}>*</Text>
+                                                    }
+                                                    <Text style={styles.text}>{item[0]}</Text>
+                                                    {
+                                                        item[1] == 1 ? null :
+                                                            <Text style={styles.exponentialText}>{item[1]}</Text>
+                                                    }
+                                                </View>
+                                            )
+                                    }
+                                </View>
+                                : null
+                        }
 
                         <TextInput
                             placeholder='Digite um número'
                             placeholderTextColor={colors.darkGrey}
                             style={styles.cardInput}
-                            keyboardType='number-pad'
+                            keyboardType='numeric'
                             keyboardAppearance='dark'
                             clearButtonMode='always'
-                            selectionColor={contrastColor}
+                            selectionColor={mainColor}
                             maxLength={13}
                             onChangeText={text => {
-                                setNumber(Number(text));
+                                setNumber(Number(text.replace(/[^\d]+/g, '')));
                                 if (!newNumberToTest) {
                                     setNewNumberToTest(true);
                                     setMainColor(colors.purple);
@@ -124,16 +152,32 @@ const styles = StyleSheet.create({
         padding: 20,
     },
 
-    cardTittleGroup: {
+    cardGroup: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
     },
+
     cardTittle: {
         color: colors.black,
         fontSize: 32,
         fontWeight: '600',
         textAlign: 'center',
+    },
+    text: {
+        color: colors.black,
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    factorizationView: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    exponentialView: {
+        flexDirection: 'row',
+    },
+    exponentialText: {
+        fontSize: 10,
     },
 
     cardInput: {

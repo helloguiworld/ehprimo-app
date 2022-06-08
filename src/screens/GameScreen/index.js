@@ -4,11 +4,14 @@ import {
     View,
     Text,
     Alert,
+    TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Entypo } from '@expo/vector-icons';
 
 import ehPrimo from '../../functions/ehPrimo';
+import factorization from '../../functions/factorization';
 import colors from '../../colors';
 
 import Button from '../../components/Button';
@@ -42,14 +45,14 @@ export default function GameScreen() {
             let newPoints = points + 1;
             setPoints(newPoints);
 
-            if (newPoints >= 43)
-                generateNewNum(1000, 10000);
-            else if (newPoints >= 23)
-                generateNewNum(100, 1000);
-            else if (newPoints >= 13)
-                generateNewNum(100, 500);
-            else
+            if (newPoints < 13)
                 generateNewNum();
+            else if (newPoints < 23)
+                generateNewNum(100, 500);
+            else if (newPoints < 43)
+                generateNewNum(100, 1000);
+            else
+                generateNewNum(1000, 10000);
         } else {
             if (points > record) {
                 Alert.alert(
@@ -91,6 +94,16 @@ export default function GameScreen() {
                     style: 'destructive'
                 },
             ]
+        );
+    }
+
+    function showFactorization() {
+        console.log(factorization(number));
+        Alert.alert(
+            `Você errou o número ${number}`,
+            result == true ?
+                "Ele é primo!" :
+                `Ele não é primo e tem a fatoração:\n${factorization(number, false).join('*')}`,
         );
     }
 
@@ -173,6 +186,14 @@ export default function GameScreen() {
                             textStyle={{ color: colors.darkPurple }}
                             onPressOut={() => navigation.goBack()}
                         >Voltar</Button>
+
+                        {
+                            number != 0 ?
+                                <TouchableOpacity style={styles.helpButton} onPress={showFactorization}>
+                                    <Entypo name="help" size={18} color={colors.white} />
+                                </TouchableOpacity>
+                                : null
+                        }
                     </>
                 )
             }
@@ -202,5 +223,18 @@ const styles = StyleSheet.create({
     },
     answerButton: {
         width: '48%',
+    },
+
+    helpButton: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        width: 35,
+        height: 35,
+        backgroundColor: colors.purple,
+        borderRadius: 35 / 2,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
