@@ -9,6 +9,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ehPrimo from '../../functions/ehPrimo';
 import factorization from '../../functions/factorization';
@@ -18,6 +19,7 @@ import Button from '../../components/Button';
 
 export default function GameScreen() {
     const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
 
     const [gameOn, setGameOn] = useState(false);
     const [number, setNumber] = useState(0);
@@ -131,9 +133,9 @@ export default function GameScreen() {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { marginTop: Platform.OS === 'ios' ? 0 : insets.top }]}>
             {
-                gameOn ? (
+                gameOn ?
                     <>
                         <Text style={[styles.text, { fontSize: 40 }]}>{number} eh primo?</Text>
                         <Text style={styles.text}>
@@ -154,7 +156,7 @@ export default function GameScreen() {
                             >Sim</Button>
                         </View>
                     </>
-                ) : (
+                    :
                     <>
                         {
                             record == 0 ?
@@ -195,7 +197,6 @@ export default function GameScreen() {
                                 : null
                         }
                     </>
-                )
             }
         </View >
     )
