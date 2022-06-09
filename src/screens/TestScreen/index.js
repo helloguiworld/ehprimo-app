@@ -22,13 +22,14 @@ import Button from '../../components/Button';
 export default function TestScreen() {
     const navigation = useNavigation();
 
-    const [number, setNumber] = useState(0);
+    const [number, setNumber] = useState('');
     const [numberFactorization, setNumberFactorization] = useState([]);
     const [testedNumber, setTestedNumber] = useState(null);
     const [title, setTitle] = useState('Eh Primo?');
     const [newNumberToTest, setNewNumberToTest] = useState(false);
     const [mainColor, setMainColor] = useState(colors.purple);
     const [contrastColor, setContrastColor] = useState(colors.darkPurple);
+    const [lightColor, setLightColor] = useState(colors.lightPurple);
 
     function easterEgg() {
         Alert.alert(
@@ -45,24 +46,27 @@ export default function TestScreen() {
                 "Número inválido",
                 "Você precisa digitar um número antes de efetuar a verificação!"
             );
-        } else if (number == 112358) {
+        } else if (number == "112358") {
+            setNumber('');
             setTestedNumber(null);
             setNumberFactorization([]);
             setTitle('Eh Primo?');
             navigation.navigate('Game');
         } else {
-            setTestedNumber(number);
+            setTestedNumber(Number(number));
             if (ehPrimo(number)) {
                 setTitle(' eh primo!');
                 setNumberFactorization([]);
                 setMainColor(colors.green);
                 setContrastColor(colors.darkGreen);
+                setLightColor(colors.lightGreen);
                 Vibration.vibrate();
             } else {
                 setTitle(' não eh :/');
-                setNumberFactorization(factorization(number, false, true));
+                setNumberFactorization(factorization(Number(number), false, true));
                 setMainColor(colors.red);
                 setContrastColor(colors.darkRed);
+                setLightColor(colors.lightRed);
             }
         }
     }
@@ -89,7 +93,7 @@ export default function TestScreen() {
                                                 <View key={index} style={styles.exponentialView}>
                                                     {
                                                         index == 0 ? null :
-                                                        <Text style={styles.text}>*</Text>
+                                                            <Text style={styles.text}>*</Text>
                                                     }
                                                     <Text style={styles.text}>{item[0]}</Text>
                                                     {
@@ -104,20 +108,22 @@ export default function TestScreen() {
                         }
 
                         <TextInput
+                            value={number}
                             placeholder='Digite um número'
                             placeholderTextColor={colors.darkGrey}
                             style={styles.cardInput}
                             keyboardType='numeric'
                             keyboardAppearance='dark'
                             clearButtonMode='always'
-                            selectionColor={mainColor}
+                            selectionColor={Platform.OS === 'ios' ? mainColor : lightColor}
                             maxLength={13}
                             onChangeText={text => {
-                                setNumber(Number(text.replace(/[^\d]+/g, '')));
+                                setNumber(text.replace(/[^\d]+/g, ''));
                                 if (!newNumberToTest) {
                                     setNewNumberToTest(true);
                                     setMainColor(colors.purple);
                                     setContrastColor(colors.darkPurple);
+                                    setLightColor(colors.lightPurple);
                                 }
                             }}
                         />

@@ -11,7 +11,8 @@ export default function factorization(number, quotients = true, exponential = fa
         } else {
             if (divider != 2) {
                 do divider += 2;
-                while (!ehPrimo(divider));
+                while (divider <= Math.sqrt(number) && !ehPrimo(divider));
+                if(divider > Math.sqrt(number)) divider = number;
             } else
                 divider = 3;
         }
