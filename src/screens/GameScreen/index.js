@@ -159,6 +159,14 @@ export default function GameScreen() {
                     :
                     <>
                         {
+                            number != 0 ?
+                                <TouchableOpacity style={styles.helpButton} onPress={showFactorization}>
+                                    <Entypo name="help" size={18} color={colors.white} />
+                                </TouchableOpacity>
+                                : null
+                        }
+
+                        {
                             record == 0 ?
                                 <Text style={[styles.text, { fontSize: 40 }]}>
                                     EhPrimo Play
@@ -188,14 +196,6 @@ export default function GameScreen() {
                             textStyle={{ color: colors.darkPurple }}
                             onPressOut={() => navigation.goBack()}
                         >Voltar</Button>
-
-                        {
-                            number != 0 ?
-                                <TouchableOpacity style={styles.helpButton} onPress={showFactorization}>
-                                    <Entypo name="help" size={18} color={colors.white} />
-                                </TouchableOpacity>
-                                : null
-                        }
                     </>
             }
         </View >
@@ -234,7 +234,6 @@ const styles = StyleSheet.create({
         height: 35,
         backgroundColor: colors.purple,
         borderRadius: 35 / 2,
-        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
     },

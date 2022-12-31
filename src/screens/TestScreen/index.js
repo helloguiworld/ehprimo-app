@@ -8,9 +8,11 @@ import {
     Alert,
     Keyboard,
     Vibration,
+    TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Entypo } from '@expo/vector-icons';
 
 import colors from '../../colors';
 import ehPrimo from '../../functions/ehPrimo';
@@ -21,6 +23,7 @@ import Button from '../../components/Button';
 
 export default function TestScreen() {
     const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
 
     const [number, setNumber] = useState('');
     const [numberFactorization, setNumberFactorization] = useState([]);
@@ -38,6 +41,10 @@ export default function TestScreen() {
         );
     }
 
+    function openGameScreen() {
+        navigation.navigate('Game');
+    }
+
     function verify(number) {
         Keyboard.dismiss();
         setNewNumberToTest(false);
@@ -46,12 +53,6 @@ export default function TestScreen() {
                 "Número inválido",
                 "Você precisa digitar um número antes de efetuar a verificação!"
             );
-        } else if (number == "112358") {
-            setNumber('');
-            setTestedNumber(null);
-            setNumberFactorization([]);
-            setTitle('Eh Primo?');
-            navigation.navigate('Game');
         } else {
             setTestedNumber(Number(number));
             if (ehPrimo(number)) {
@@ -78,6 +79,10 @@ export default function TestScreen() {
         >
             <DismissKeybordView>
                 <SafeAreaView style={[styles.container, { backgroundColor: mainColor }]}>
+                    <TouchableOpacity style={[styles.gameButton, { top: insets.top + 20 }]} onPress={openGameScreen}>
+                        <Entypo name="game-controller" size={20} color={contrastColor} />
+                    </TouchableOpacity>
+
                     <View style={styles.card}>
                         <View style={styles.cardGroup}>
                             <Text style={styles.cardTittle}>{testedNumber}</Text>
@@ -118,12 +123,18 @@ export default function TestScreen() {
                             selectionColor={Platform.OS === 'ios' ? mainColor : lightColor}
                             maxLength={13}
                             onChangeText={text => {
-                                setNumber(text.replace(/[^\d]+/g, ''));
-                                if (!newNumberToTest) {
-                                    setNewNumberToTest(true);
+                                if (text == '') {
+                                    setNewNumberToTest(false);
+                                    setNumber('');
+                                    setTestedNumber(null);
+                                    setNumberFactorization([]);
+                                    setTitle('Eh Primo?');
                                     setMainColor(colors.purple);
                                     setContrastColor(colors.darkPurple);
                                     setLightColor(colors.lightPurple);
+                                } else {
+                                    setNumber(text.replace(/[^\d]+/g, ''));
+                                    if (!newNumberToTest) setNewNumberToTest(true);
                                 }
                             }}
                         />
@@ -131,7 +142,7 @@ export default function TestScreen() {
                         <Button
                             style={{ backgroundColor: contrastColor, marginTop: 10 }}
                             onPress={() => verify(number)}
-                            onLongPress={easterEgg}
+                            // onLongPress={easterEgg}
                             delayLongPress={2000}
                         >
                             Verificar
@@ -146,14 +157,15 @@ export default function TestScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.purple,
+        backgroundColor: colors.white,
         justifyContent: 'center',
         alignItems: 'stretch',
     },
 
     card: {
         backgroundColor: colors.white,
-        margin: 40,
+        marginHorizontal: 20,
+        marginBottom: 20,
         borderRadius: 8,
         padding: 20,
     },
@@ -193,5 +205,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 4,
         padding: 10,
+    },
+
+
+    gameButton: {
+        position: 'absolute',
+        // top: 20,
+        right: 20,
+        width: 35,
+        height: 35,
+        backgroundColor: colors.white,
+        borderRadius: 35 / 2,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
