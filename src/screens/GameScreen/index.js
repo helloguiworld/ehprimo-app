@@ -16,6 +16,7 @@ import factorization from '../../functions/factorization';
 import colors from '../../colors';
 
 import Button from '../../components/Button';
+import PlayerCard from './components/PlayerCard';
 
 export default function GameScreen() {
     const navigation = useNavigation();
@@ -76,7 +77,7 @@ export default function GameScreen() {
 
     function resetRecord() {
         Alert.alert(
-            'Modo reset',
+            'Reset',
             'Deseja apagar seu recorde atual?',
             [
                 {
@@ -88,24 +89,25 @@ export default function GameScreen() {
                             "Reset executado",
                             "Você zerou seu recorde."
                         );
-                    }
+                    },
+                    style: 'destructive'
                 },
                 {
                     text: 'Não',
                     onPress: () => console.log('Reset cancelado'),
-                    style: 'destructive'
                 },
             ]
         );
     }
 
     function showFactorization() {
-        console.log(factorization(number));
+        let numberFactorization = factorization(number)
+        console.log(numberFactorization);
         Alert.alert(
             `Você errou o número ${number}`,
             result == true ?
                 "Ele é primo!" :
-                `Ele não é primo e tem a fatoração:\n${factorization(number, false).join('*')}`,
+                `Ele não é primo e tem a fatoração:\n${numberFactorization.map(item => item[1]).join('*')}`,
         );
     }
 
@@ -133,24 +135,24 @@ export default function GameScreen() {
     }, []);
 
     return (
-        <View style={[styles.container, { marginTop: Platform.OS === 'ios' ? 0 : insets.top }]}>
+        <View style={[styles.mainView, { marginTop: Platform.OS === 'ios' ? 0 : insets.top }]}>
             {
                 gameOn ?
                     <>
-                        <Text style={[styles.text, { fontSize: 40 }]}>{number} eh primo?</Text>
                         <Text style={styles.text}>
                             {points == 0 ? "Você ainda não fez pontos" : `Você fez ${points} ${points == 1 ? "ponto" : "pontos"}`}
                         </Text>
+                        <Text style={[styles.text, { fontSize: 40 }]}>{number} eh primo?</Text>
 
                         <View style={styles.answerGroup}>
                             <Button
-                                style={[styles.answerButton, { backgroundColor: colors.lightPurple }]}
-                                textStyle={{ color: colors.darkPurple }}
+                                style={[styles.answerButton, { backgroundColor: colors.red }]}
+                                textStyle={{ color: colors.white }}
                                 onPressOut={() => verify(false)}
                             >Não</Button>
 
                             <Button
-                                style={[styles.answerButton, { backgroundColor: colors.darkPurple }]}
+                                style={[styles.answerButton, { backgroundColor: colors.darkGreen }]}
                                 textStyle={{ color: colors.white }}
                                 onPressOut={() => verify(true)}
                             >Sim</Button>
@@ -158,6 +160,8 @@ export default function GameScreen() {
                     </>
                     :
                     <>
+                        <PlayerCard />
+
                         {
                             number != 0 ?
                                 <TouchableOpacity style={styles.helpButton} onPress={showFactorization}>
@@ -174,7 +178,7 @@ export default function GameScreen() {
                                 :
                                 <>
                                     <Text style={styles.text}>Seu record atual é de</Text>
-                                    <Text style={[styles.text, { fontSize: 40 }]}>{record} pontos</Text>
+                                    <Text style={[styles.text, { fontSize: 40 }]}>{record} {record == 1 ? "ponto" : "pontos"}</Text>
                                 </>
                         }
                         <Text style={[styles.text, { fontSize: 16, marginBottom: 20, color: colors.purple }]}>
@@ -203,7 +207,7 @@ export default function GameScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    mainView: {
         flex: 1,
         backgroundColor: colors.white,
         padding: 30,

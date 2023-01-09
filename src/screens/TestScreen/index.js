@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+    StatusBar,
     StyleSheet,
     KeyboardAvoidingView,
     View,
@@ -76,10 +77,13 @@ export default function TestScreen() {
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1, backgroundColor: contrastColor }}
+            
+            keyboardVerticalOffset={10}
         >
+            <StatusBar backgroundColor="#61dafb" barStyle="light-content"/>
             <DismissKeybordView>
-                <SafeAreaView style={[styles.container, { backgroundColor: mainColor }]}>
-                    <TouchableOpacity style={[styles.gameButton, { top: insets.top + 20 }]} onPress={openGameScreen}>
+                <SafeAreaView style={[styles.container, { backgroundColor: mainColor, marginTop: insets.top }]}>
+                    <TouchableOpacity style={styles.gameButton} onPress={openGameScreen}>
                         <Entypo name="game-controller" size={20} color={contrastColor} />
                     </TouchableOpacity>
 
@@ -121,7 +125,7 @@ export default function TestScreen() {
                             keyboardAppearance='dark'
                             clearButtonMode='always'
                             selectionColor={Platform.OS === 'ios' ? mainColor : lightColor}
-                            maxLength={13}
+                            // maxLength={13}
                             onChangeText={text => {
                                 if (text == '') {
                                     setNewNumberToTest(false);
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
 
     gameButton: {
         position: 'absolute',
-        // top: 20,
+        top: 20,
         right: 20,
         width: 35,
         height: 35,
