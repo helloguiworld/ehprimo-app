@@ -5,6 +5,20 @@ const useKeyboardVisible = () => {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
     useEffect(() => {
+        const keyboardWillShowListener = Keyboard.addListener(
+            'keyboardWillShow',
+            () => {
+                setKeyboardVisible(true);
+            },
+        );
+        const keyboardWillHideListener = Keyboard.addListener(
+            'keyboardWillHide',
+            () => {
+                setKeyboardVisible(false);
+            },
+        );
+
+        // Only keyboardDidShow and keyboardDidHide events are available on Android
         const keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
             () => {
@@ -19,6 +33,8 @@ const useKeyboardVisible = () => {
         );
 
         return () => {
+            keyboardWillHideListener.remove();
+            keyboardWillShowListener.remove();
             keyboardDidHideListener.remove();
             keyboardDidShowListener.remove();
         };

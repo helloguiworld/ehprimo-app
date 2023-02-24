@@ -19,7 +19,7 @@ import colors from '../../colors';
 import ehPrimo from '../../functions/ehPrimo';
 import factorization from '../../functions/factorization';
 
-import DismissKeybordView from '../../components/DismissKeybordView';
+import CustomKeyboardAvoidingView from '../../components/CustomKeyboardAvoidingView';
 import Button from '../../components/Button';
 
 export default function TestScreen() {
@@ -34,13 +34,6 @@ export default function TestScreen() {
     const [mainColor, setMainColor] = useState(colors.purple);
     const [contrastColor, setContrastColor] = useState(colors.darkPurple);
     const [lightColor, setLightColor] = useState(colors.lightPurple);
-
-    function easterEgg() {
-        Alert.alert(
-            "Easter Egg 🥚",
-            "Digite os 6 primeiros números da Sequência de Fibonacci para acessar um jogo!"
-        );
-    }
 
     function openGameScreen() {
         navigation.navigate('Game');
@@ -74,87 +67,82 @@ export default function TestScreen() {
     }
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        <CustomKeyboardAvoidingView
+            dismissKeybord
             style={{ flex: 1, backgroundColor: contrastColor }}
-            
-            keyboardVerticalOffset={10}
         >
-            <StatusBar backgroundColor="#61dafb" barStyle="light-content"/>
-            <DismissKeybordView>
-                <SafeAreaView style={[styles.container, { backgroundColor: mainColor, marginTop: insets.top }]}>
-                    <TouchableOpacity style={styles.gameButton} onPress={openGameScreen}>
-                        <Entypo name="game-controller" size={20} color={contrastColor} />
-                    </TouchableOpacity>
+            <StatusBar backgroundColor="#61dafb" barStyle="light-content" />
+            <SafeAreaView style={[styles.container, { backgroundColor: mainColor, marginTop: insets.top }]}>
+                <TouchableOpacity style={styles.gameButton} onPress={openGameScreen}>
+                    <Entypo name="game-controller" size={20} color={contrastColor} />
+                </TouchableOpacity>
 
-                    <View style={styles.card}>
-                        <View style={styles.cardGroup}>
-                            <Text style={styles.cardTittle}>{testedNumber}</Text>
-                            <Text style={styles.cardTittle}>{title}</Text>
-                        </View>
-                        {
-                            numberFactorization.length ?
-                                <View style={styles.factorizationView}>
-                                    <Text style={styles.text}>Fatoração: </Text>
-                                    {
-                                        numberFactorization
-                                            .flatMap((item, index) =>
-                                                <View key={index} style={styles.exponentialView}>
-                                                    {
-                                                        index == 0 ? null :
-                                                            <Text style={styles.text}>*</Text>
-                                                    }
-                                                    <Text style={styles.text}>{item[0]}</Text>
-                                                    {
-                                                        item[1] == 1 ? null :
-                                                            <Text style={styles.exponentialText}>{item[1]}</Text>
-                                                    }
-                                                </View>
-                                            )
-                                    }
-                                </View>
-                                : null
-                        }
-
-                        <TextInput
-                            value={number}
-                            placeholder='Digite um número'
-                            placeholderTextColor={colors.darkGrey}
-                            style={styles.cardInput}
-                            keyboardType='numeric'
-                            keyboardAppearance='dark'
-                            clearButtonMode='always'
-                            selectionColor={Platform.OS === 'ios' ? mainColor : lightColor}
-                            // maxLength={13}
-                            onChangeText={text => {
-                                if (text == '') {
-                                    setNewNumberToTest(false);
-                                    setNumber('');
-                                    setTestedNumber(null);
-                                    setNumberFactorization([]);
-                                    setTitle('Eh Primo?');
-                                    setMainColor(colors.purple);
-                                    setContrastColor(colors.darkPurple);
-                                    setLightColor(colors.lightPurple);
-                                } else {
-                                    setNumber(text.replace(/[^\d]+/g, ''));
-                                    if (!newNumberToTest) setNewNumberToTest(true);
-                                }
-                            }}
-                        />
-
-                        <Button
-                            style={{ backgroundColor: contrastColor, marginTop: 10 }}
-                            onPress={() => verify(number)}
-                            // onLongPress={easterEgg}
-                            delayLongPress={2000}
-                        >
-                            Verificar
-                        </Button>
+                <View style={styles.card}>
+                    <View style={styles.cardGroup}>
+                        <Text style={styles.cardTittle}>{testedNumber}</Text>
+                        <Text style={styles.cardTittle}>{title}</Text>
                     </View>
-                </SafeAreaView>
-            </DismissKeybordView>
-        </KeyboardAvoidingView>
+                    {
+                        numberFactorization.length ?
+                            <View style={styles.factorizationView}>
+                                <Text style={styles.text}>Fatoração: </Text>
+                                {
+                                    numberFactorization
+                                        .flatMap((item, index) =>
+                                            <View key={index} style={styles.exponentialView}>
+                                                {
+                                                    index == 0 ? null :
+                                                        <Text style={styles.text}>*</Text>
+                                                }
+                                                <Text style={styles.text}>{item[0]}</Text>
+                                                {
+                                                    item[1] == 1 ? null :
+                                                        <Text style={styles.exponentialText}>{item[1]}</Text>
+                                                }
+                                            </View>
+                                        )
+                                }
+                            </View>
+                            : null
+                    }
+
+                    <TextInput
+                        value={number}
+                        placeholder='Digite um número'
+                        placeholderTextColor={colors.darkGrey}
+                        style={styles.cardInput}
+                        keyboardType='numeric'
+                        keyboardAppearance='dark'
+                        clearButtonMode='always'
+                        selectionColor={Platform.OS === 'ios' ? mainColor : lightColor}
+                        maxLength={13}
+                        onChangeText={text => {
+                            if (text == '') {
+                                setNewNumberToTest(false);
+                                setNumber('');
+                                setTestedNumber(null);
+                                setNumberFactorization([]);
+                                setTitle('Eh Primo?');
+                                setMainColor(colors.purple);
+                                setContrastColor(colors.darkPurple);
+                                setLightColor(colors.lightPurple);
+                            } else {
+                                setNumber(text.replace(/[^\d]+/g, ''));
+                                if (!newNumberToTest) setNewNumberToTest(true);
+                            }
+                        }}
+                    />
+
+                    <Button
+                        style={{ backgroundColor: contrastColor }}
+                        onPress={() => verify(number)}
+                        delayLongPress={2000}
+                    >
+                        Verificar
+                    </Button>
+                </View>
+            </SafeAreaView>
+        </CustomKeyboardAvoidingView>
     )
 }
 
@@ -203,7 +191,7 @@ const styles = StyleSheet.create({
     },
 
     cardInput: {
-        backgroundColor: colors.grey,
+        backgroundColor: colors.lightGrey,
         color: colors.black,
         fontSize: 20,
         marginTop: 10,

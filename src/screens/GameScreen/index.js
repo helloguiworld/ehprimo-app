@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
     StyleSheet,
     View,
@@ -11,6 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import UserContext from '../../contexts/userContext';
+
 import ehPrimo from '../../functions/ehPrimo';
 import factorization from '../../functions/factorization';
 import colors from '../../colors';
@@ -21,7 +23,9 @@ import PlayerCard from './components/PlayerCard';
 export default function GameScreen() {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
-
+    
+    const [user, setUser] = useContext(UserContext);
+    
     const [gameOn, setGameOn] = useState(false);
     const [number, setNumber] = useState(0);
     const [numberHistory, setNumberHistory] = useState(new Set());
@@ -115,18 +119,18 @@ export default function GameScreen() {
         try {
             await AsyncStorage.setItem('@Game_Record', newRecord.toString());
         } catch (error) {
-            console.log("Erro ao gravar recorde com AsyncStorage");
+            console.log("Erro ao salvar recorde em AsyncStorage");
         }
         setRecord(newRecord);
     }
 
     async function readRecord() {
         try {
-            let response = await AsyncStorage.getItem('@Game_Record');
-            if (response == null) response = 0;
-            setRecord(Number(response));
+            let item = await AsyncStorage.getItem('@Game_Record');
+            if (item == null) item = 0;
+            setRecord(Number(item));
         } catch (error) {
-            console.log("Erro ao recuperar recorde com AsyncStorage");
+            console.log("Erro ao obter recorde em AsyncStorage");
         }
     }
 
@@ -163,25 +167,24 @@ export default function GameScreen() {
                         <PlayerCard />
 
                         {
-                            number != 0 ?
-                                <TouchableOpacity style={styles.helpButton} onPress={showFactorization}>
-                                    <Entypo name="help" size={18} color={colors.white} />
-                                </TouchableOpacity>
-                                : null
+                            number != 0 &&
+                            <TouchableOpacity style={styles.helpButton} onPress={showFactorization}>
+                                <Entypo name="help" size={18} color={styles.helpButton.color} />
+                            </TouchableOpacity>
                         }
 
                         {
                             record == 0 ?
-                                <Text style={[styles.text, { fontSize: 40 }]}>
+                                <Text style={[styles.text, { fontSize: 40, fontWeight: '500' }]}>
                                     EhPrimo Play
                                 </Text>
                                 :
                                 <>
                                     <Text style={styles.text}>Seu record atual é de</Text>
-                                    <Text style={[styles.text, { fontSize: 40 }]}>{record} {record == 1 ? "ponto" : "pontos"}</Text>
+                                    <Text style={[styles.text, { fontSize: 40, fontWeight: '500' }]}>{record} {record == 1 ? "ponto" : "pontos"}</Text>
                                 </>
                         }
-                        <Text style={[styles.text, { fontSize: 16, marginBottom: 20, color: colors.purple }]}>
+                        <Text style={[styles.text, { fontSize: 16, marginTop: 5, marginBottom: 20, color: colors.darkPurple }]}>
                             👇 Clique para jogar 👇
                         </Text>
 
@@ -196,10 +199,10 @@ export default function GameScreen() {
                         >Jogar</Button>
 
                         <Button
-                            style={{ backgroundColor: colors.lightPurple, marginTop: 10 }}
+                            style={{ marginTop: 10, backgroundColor: colors.extraLightGrey }}
                             textStyle={{ color: colors.darkPurple }}
                             onPressOut={() => navigation.goBack()}
-                        >Voltar</Button>
+                        >Sair</Button>
                     </>
             }
         </View >
@@ -210,13 +213,12 @@ const styles = StyleSheet.create({
     mainView: {
         flex: 1,
         backgroundColor: colors.white,
-        padding: 30,
+        padding: 20,
         justifyContent: 'center',
-        alignItems: 'stretch',
     },
 
     text: {
-        color: colors.darkPurple,
+        color: colors.extraDarkPurple,
         fontSize: 20,
         textAlign: 'center',
     },
@@ -236,7 +238,8 @@ const styles = StyleSheet.create({
         right: 20,
         width: 35,
         height: 35,
-        backgroundColor: colors.purple,
+        backgroundColor: colors.lightPurple,
+        color: colors.darkPurple,
         borderRadius: 35 / 2,
         justifyContent: 'center',
         alignItems: 'center',

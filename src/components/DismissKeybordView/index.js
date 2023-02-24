@@ -2,12 +2,15 @@ import React from 'react';
 import {
     TouchableWithoutFeedback,
     Keyboard,
+    View,
 } from 'react-native';
 
-export default function DismissKeybordView({ children }) {
+export default function DismissKeybordView(props) {
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            {children}
+            <View style={[{ flex: 1 }, props.style]}>
+                {props.children}
+            </View>
         </TouchableWithoutFeedback>
     );
 }

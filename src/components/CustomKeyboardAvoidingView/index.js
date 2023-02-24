@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import {
     useWindowDimensions,
     KeyboardAvoidingView,
+    View,
 } from 'react-native';
+
+import DismissKeybordView from '../DismissKeybordView';
 
 export default function CustomKeyboardAvoidingView(props) {
     const windowDimensions = useWindowDimensions();
@@ -12,11 +15,18 @@ export default function CustomKeyboardAvoidingView(props) {
     return (
         <KeyboardAvoidingView
             behavior={props.behavior ? props.behavior : Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={props.style}
+            style={props.dismissKeybord ? { flex: 1, backgroundColor: props.style?.backgroundColor } : props.style}
             onLayout={event => setViewHeight(event.nativeEvent.layout.height)}
             keyboardVerticalOffset={props.keyboardVerticalOffset ? props.keyboardVerticalOffset : windowDimensions.height - viewHeight}
         >
-            {props.children}
+            {
+                props.dismissKeybord ?
+                    <DismissKeybordView style={props.style}>
+                        {props.children}
+                    </DismissKeybordView> :
+                    props.children
+            }
+
         </KeyboardAvoidingView>
     )
 }
