@@ -32,6 +32,7 @@ export default function PlayerScreen() {
         <>
             <BackPageButton />
             {user['username'] && <LogoutButton />}
+            
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <CustomKeyboardAvoidingView
                     style={[styles.mainView]}

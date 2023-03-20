@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
     useWindowDimensions,
     KeyboardAvoidingView,
@@ -16,7 +16,15 @@ export default function CustomKeyboardAvoidingView(props) {
         <KeyboardAvoidingView
             behavior={props.behavior ? props.behavior : Platform.OS === 'ios' ? 'padding' : 'height'}
             style={props.dismissKeybord ? { flex: 1, backgroundColor: props.style?.backgroundColor } : props.style}
-            onLayout={event => setViewHeight(event.nativeEvent.layout.height)}
+            onLayout={event => {
+                event.persist();
+                setTimeout(() => {
+                    event.target.measure((a, b, width, height, px, py) => {
+                        // console.log(height);
+                        setViewHeight(height);
+                    });
+                }, 100);
+            }}
             keyboardVerticalOffset={props.keyboardVerticalOffset ? props.keyboardVerticalOffset : windowDimensions.height - viewHeight}
         >
             {

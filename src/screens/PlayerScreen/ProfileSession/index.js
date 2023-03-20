@@ -32,7 +32,7 @@ export default function ProfileSession() {
             // onPress={loginPlayer}
             >Editar perfil</Button>
             <Button
-                style={{ backgroundColor: colors.grey, color: colors.extraLightGrey }}
+                style={{ backgroundColor: colors.extraLightPurple, color: colors.purple }}
             // onPress={loginPlayer}
             >Configurações</Button>
 
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     subtittle: {
         textAlign: 'center',
         fontSize: 16,
-        color: colors.darkPurple,
+        color: colors.purple,
         marginHorizontal: 20,
         marginBottom: 40,
     },

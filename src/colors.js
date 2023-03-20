@@ -6,6 +6,7 @@ const colors = {
     darkGrey: '#707070',
     extraDarkGrey: '#404040',
     black: '#333333',
+    extraLightPurple: '#EBEBFF',
     lightPurple: '#CDCDFF',
     purple: '#7E7ECC',
     darkPurple: '#5050A8',
